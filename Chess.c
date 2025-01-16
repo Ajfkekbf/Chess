@@ -18,6 +18,7 @@ char piece;
 bool WhiteCheck;
 bool BlackCheck;
 bool checking=false;
+char helpBoard[BOARD_SIZE][BOARD_SIZE];
 
 void getMove();
 bool isCheck(char (*)[8],char,int,int);
@@ -41,6 +42,30 @@ void printBoard()
     for(i;i<BOARD_SIZE;i++){
         printf(" %d || %c || %c || %c || %c || %c || %c || %c || %c ||\n",i,board[i][0],board[i][1],board[i][2],board[i][3],board[i][4],board[i][5],board[i][6],board[i][7]);
         printf("   ------------------------------------------\n");
+    }
+}
+
+void helpBoardToBoard()
+{
+    int i=0,n=0;
+    for(i;i<BOARD_SIZE;i++){
+        n=0;
+        for(n;n<BOARD_SIZE;n++)
+        {
+            board[i][n]=helpBoard[i][n];
+        }
+    }
+}
+
+void getHelpBoard()
+{
+    int i=0,n=0;
+    for(i;i<BOARD_SIZE;i++){
+        n=0;
+        for(n;n<BOARD_SIZE;n++)
+        {
+            helpBoard[i][n]=board[i][n];
+        }
     }
 }
 
@@ -91,7 +116,19 @@ void getMove()
             RowEnd=LastRowEnd;
             ColStart=LastColStart;
             ColEnd=LastColEnd;
-            undoMoveAndTurn();
+            switch(Tura)
+            {
+                case 'W':
+                    Tura='B';
+                    break;
+                case 'B':
+                    Tura='W';
+                    break;
+                default:
+                    printf("Error!(Kogo Tura!?)\n");
+                    break;
+            }
+            helpBoardToBoard();
             printBoard();
             printf("Tura: %c\n",Tura);
             getMove();
@@ -108,6 +145,7 @@ void getMove()
     LastColEnd=ColEnd;
     piece=board[RowStart][ColStart];
     TargetedPiece=board[RowEnd][ColEnd];
+    getHelpBoard();
 }
 
 
@@ -241,6 +279,8 @@ int isValidQueenMove(char board[BOARD_SIZE][BOARD_SIZE], int RowStart, int ColSt
     if (abs(RowEnd - RowStart) == abs(ColEnd - ColStart)) {
         return isValidBishopMove(board, RowStart, ColStart, RowEnd, ColEnd);  // Sprawdzamy jak goniec
     }
+    if(board[RowStart][ColStart]=='Q' && board[RowEnd][ColEnd]=='K'){return 0;}
+    if(board[RowStart][ColStart]=='q' && board[RowEnd][ColEnd]=='k'){return 0;}
     return 0;
 }
 
